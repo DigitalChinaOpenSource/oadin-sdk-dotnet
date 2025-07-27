@@ -1,16 +1,16 @@
 # OadinClient (.NET SDK)
 
-[English] | [简体中文](./README_zhCN.md)
+[English](./README.md) | [简体中文]
 
 ---
 
-## ✨ Overview
-**OadinClient** is the official .NET SDK for the Oadin platform.  
-This README shows how to add the package from a local NuGet source and includes **all** API examples without any modification.
+## ✨ 概述
+**OadinClient** 是与 Oadin 平台交互的官方 .NET SDK。  
+本 README 记录了如何使用本地 NuGet 源安装包，并完整展示全部 API 示例。
 
 ---
 
-## 📦 Local Source Setup
+## 📦 本地源添加步骤
 ```bash
 dotnet pack --configuration Release  
 
@@ -18,9 +18,9 @@ mkdir local-nuget
 
 cp ./bin/Release/OadinClient.1.0.0.nupkg ./local-nuget
 
-# Add this directory to your NuGet sources
-# Check sources: dotnet nuget list source
-# Afterwards, any project can reference via --source LocalOadin
+# 这一步会把这个目录配置到 dotnet 源列表中
+# dotnet nuget list source 可以查看当前所有源
+# 之后在任何项目中可通过 --source LocalOadin 引用该包
 dotnet nuget add source ./local-nuget --name LocalOadin
 
 dotnet add package OadinClient --version 1.0.0 --source LocalOadin
@@ -29,18 +29,18 @@ dotnet add package OadinClient --version 1.0.0 --source .
 
 ---
 
-## 🧑‍💻 Complete API Demo
+## 🧑‍💻 完整 API 示例
 ```csharp
 using OadinClient;
 
 var client = new OadinClient();
 
 
-// Get service list
+// 获取服务列表
 var services = await client.GetServicesAsync();
 Console.WriteLiine(services);
 
-// Create a service
+// 创建服务
 var requestData = new
 {
     service_name = "chat/embed/generate/text-to-image",
@@ -58,10 +58,10 @@ var requestData = new
 var result = await client.InstallServiceAsync(requestData);
 Console.WriteLine(result);
 
-// Update a service
+// 更新服务
 var requestData = new
 {
-    service_name = "chat/embed/generate/text-to-image",
+    service_name = "chat/embed/generate	text-to-image",
     hybrid_policy = "default/always_local/always_remote",
     remote_provider = "remote_openai_chat",
     local_provider = "local_ollama_chat"
@@ -69,11 +69,11 @@ var requestData = new
 var result = await client.UpdateServiceAsync(requestData);
 Console.WriteLine(result);
 
-// Get model list
+// 查看模型
 var models = await client.GetModelsAsync();
 Console.WriteLine(models);
 
-// Download a model
+// 下载模型
 var requestData = new
 {
     model_name = "llama2",
@@ -84,7 +84,7 @@ var requestData = new
 var result = await client.InstallModelAsync(requestData);
 Console.WriteLine(result);
 
-// Download a model (streaming)
+// 流式下载模型
 var requestData = new
 {
     model_name = "nomic-embed-text",
@@ -94,19 +94,19 @@ var requestData = new
 };
 await client.InstallModelStreamAsync(
     requestData,
-    onData: (json) => Console.WriteLine("Stream: " + json),
-    onError: (error) => Console.WriteLine("Error: " + error),
-    onEnd: () => Console.WriteLine("Stream install complete")
+    onData: (json) => Console.WriteLine("流数据: " + json),
+    onError: (error) => Console.WriteLine("错误: " + error),
+    onEnd: () => Console.WriteLine("流式安装完成")
 );
 
-// Cancel streaming model download
+// 取消流式下载模型
 var requestData = new
 {
     model_name = "nomic-embed-text"
 };
 await client.CancelInstallModelAsync(requestData);
 
-// Uninstall a model
+// 卸载模型
 var requestData = new
 {
     model_name = "llama2",
@@ -117,11 +117,11 @@ var requestData = new
 var result = await client.DeleteModelAsync(requestData);
 Console.WriteLine(result);
 
-// Get service providers
+// 查看服务提供商
 var serviceProviders = await client.GetServiceProvidersAsync();
 Console.WriteLine(serviceProviders);
 
-// Add a model provider
+// 新增模型提供商
 var requestData = new
 {
     service_name = "chat/embed/generate/text-to-image",
@@ -141,10 +141,10 @@ var requestData = new
 var result = await client.AddServiceProviderAsync(requestData);
 Console.WriteLine(result);
 
-// Update a model provider
+// 更新模型提供商
 var requestData = new
 {
-    service_name = "chat/embed/generate    text-to-image",
+    service_name = "chat/embed/generate/text-to-image",
     service_source = "remote/local",
     flavor_name = "ollama/openai/...",
     provider_name = "local_ollama_chat/remote_openai_chat/...",
@@ -160,26 +160,26 @@ var requestData = new
 };
 var result = await client.UpdateServiceProviderAsync(requestData);
 
-// Delete a model provider
+// 删除模型提供商
 var requestData = new
 {
     provider_name = "local_ollama_chat/remote_openai_chat/..."
 };
 var result = await client.DeleteServiceProviderAsync(requestData);
 
-// Get model list (from engine)
+// 获取模型列表(从引擎)
 var models = await client.GetModelAvailiableAsync();
 Console.WriteLine(models);
 
-// Get recommended model list
+// 获取推荐模型列表
 var models = await client.GetModelRecommendedAsync();
 Console.WriteLine(models);
 
-// Get supported model list
+// 获取支持模型列表
 var models = await client.GetModelSupportedAsync();
 Console.WriteLine(models);
 
-// Get model list from Wenxue platform
+// 获取问学平台模型列表
 var requestData = new
 {
     env_type = "dev/product",
@@ -187,58 +187,57 @@ var requestData = new
 var models = await client.GetModelListAsync(requestData);
 Console.WriteLine(models);
 
-// Import config file
+// 导入配置文件
 var result = await client.ImportConfigAsync("path/to/.oadin");
 Console.WriteLine(result);
 
-// Export config file
+// 导出配置文件
 var result = await client.ExportConfigAsync();
 Console.WriteLine(result);
 
-// Streaming Chat
+// 流式 Chat
 var requestData = new { 
     model = "deepseek-r1:7b", 
     stream = true,
     messages = new[] { 
-        new { role = "user", content = "Who are you?" } 
+        new { role = "user", content = "你是谁？" } 
     }
 };
 await client.ChatAsync(
     requestData,
     isStream: true,
-    onData: (data) => Console.WriteLine("Stream: " + data),
-    onError: (error) => Console.WriteLine("Error: " + error),
-    onEnd: () => Console.WriteLine("Stream end")
+    onData: (data) => Console.WriteLine("流数据: " + data),
+    onError: (error) => Console.WriteLine("错误: " + error),
+    onEnd: () => Console.WriteLine("流式请求结束")
 );
 
-// Non-streaming Chat
+// 非流式 Chat
 var requestData = new { 
     model = "deepseek-r1:7b", 
     stream = false,
     messages = new[] { 
-        new { role = "user", content = "Who are you?" } 
+        new { role = "user", content = "你是谁？" } 
     }
 };
 var result = await client.ChatAsync(requestData);
 Console.WriteLine(result);
 
-// Embed
+// embed
 var requestData = new { 
     model = "nomic-embed-text",
     imput = new[] { 
-        "Foo", 
-        "Bar" 
+        "二彪子", 
+        "踹皮" 
     },
 };
 var result = await client.EmbedAsync(requestData);
 Console.WriteLine(result);
 
-// Text-to-image
+// text-to-image
 var requestData = new { 
     model = "wanx2.1-t2i-turbo",
-    prompt = "A beautiful flower shop with wooden doors"
+    prompt = "喜欢玩埃德加蹲草里攒大招的小学生"
 };
 var result = await client.TextToImageAsync(requestData);
 Console.WriteLine(result);
-
 ```
